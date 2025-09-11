@@ -1,33 +1,27 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "@/styles/Home.module.css";
 
 export default function Home() {
-  const [selectedTool, setSelectedTool] = useState("linear-regression");
+  const [selectedTool, setSelectedTool] = useState(null);
+  const [tools, setTools] = useState([]);
 
-  const tools = [
-    {
-      id: "linear-regression",
-      name: "Linear Regression",
-      description: "A model that estimates the relationship between a scalar response.",
-      icon: "📊",
-      color: "#ff4444"
-    },
-    {
-      id: "bar-chart",
-      name: "Bar Chart",
-      description: "Visualize the frequency or proportion of categories using bars.",
-      icon: "📊",
-      color: "#4444ff"
-    },
-    {
-      id: "line-chart",
-      name: "Line Chart",
-      description: "Display trends over time or sequential data.",
-      icon: "📈",
-      color: "#44ffaa"
-    }
-  ];
+  useEffect(() => {
+    const fetchTools = async () => {
+      try {
+        const res = await fetch('/api/tools');
+        const data = await res.json();
+        setTools(data);
+        if (data.length > 0) {
+          setSelectedTool(data[0].id);
+        }
+      } catch (err) {
+        console.error('Failed to fetch tools', err);
+      }
+    };
+
+    fetchTools();
+  }, []);
 
   const sampleData = [
     { x1: 5, x2: 2, y: 7 },
