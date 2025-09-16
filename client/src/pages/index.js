@@ -11,32 +11,58 @@ export default function Home() {
       name: "Linear Regression",
       description: "A model that estimates the relationship between a scalar response.",
       icon: "📊",
-      color: "#ff4444"
+      color: "#ff4444",
+      tableData: {
+        headers: ["X1", "X2", "Y"],
+        rows: [
+          [5, 2, 7],
+          [4, 3, 8],
+          [3, 4, 6],
+          [6, 5, 9],
+          [3, 6, 5],
+          [5, 7, 8]
+        ]
+      }
     },
     {
       id: "bar-chart",
       name: "Bar Chart",
       description: "Visualize the frequency or proportion of categories using bars.",
-      icon: "📊",
-      color: "#4444ff"
+      icon: "📶",
+      color: "#4444ff",
+      tableData: {
+        headers: ["Category", "Count"],
+        rows: [
+          ["A", 25],
+          ["B", 18],
+          ["C", 32],
+          ["D", 14]
+        ]
+      }
     },
     {
       id: "line-chart",
       name: "Line Chart",
       description: "Display trends over time or sequential data.",
       icon: "📈",
-      color: "#44ffaa"
+      color: "#44ffaa",
+      tableData: {
+        headers: ["Month", "Value"],
+        rows: [
+          ["Jan", 120],
+          ["Feb", 135],
+          ["Mar", 150],
+          ["Apr", 140],
+          ["May", 160]
+        ]
+      }
     }
   ];
 
-  const sampleData = [
-    { x1: 5, x2: 2, y: 7 },
-    { x1: 4, x2: 3, y: 8 },
-    { x1: 3, x2: 4, y: 6 },
-    { x1: 6, x2: 5, y: 9 },
-    { x1: 3, x2: 6, y: 5 },
-    { x1: 5, x2: 7, y: 8 }
-  ];
+  const selectedToolData =
+    tools.find((tool) => tool.id === selectedTool) ?? tools[0];
+  const tableHeaders = selectedToolData.tableData?.headers ?? [];
+  const tableRows = selectedToolData.tableData?.rows ?? [];
 
   const rCode = `# Initialize data
 df <- data.frame(
@@ -113,13 +139,16 @@ model <- lm(
           <div className={styles.centerPanel}>
             <div className={styles.toolDetails}>
               <div className={styles.toolHeader}>
-                <h1>Linear Regression</h1>
-                <p>A model that estimates the relationship between a scalar response.</p>
+                <h1>{selectedToolData.name}</h1>
+                <p>{selectedToolData.description}</p>
               </div>
-              
+
               <div className={styles.toolVisual}>
-                <div className={styles.chartIcon} style={{ color: "#ff4444" }}>
-                  📊
+                <div
+                  className={styles.chartIcon}
+                  style={{ color: selectedToolData.color }}
+                >
+                  {selectedToolData.icon}
                 </div>
               </div>
               
@@ -144,17 +173,17 @@ model <- lm(
               <table>
                 <thead>
                   <tr>
-                    <th>X1</th>
-                    <th>X2</th>
-                    <th>Y</th>
+                    {tableHeaders.map((header) => (
+                      <th key={header}>{header}</th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {sampleData.map((row, index) => (
+                  {tableRows.map((row, index) => (
                     <tr key={index}>
-                      <td>{row.x1}</td>
-                      <td>{row.x2}</td>
-                      <td>{row.y}</td>
+                      {row.map((cell, cellIndex) => (
+                        <td key={cellIndex}>{cell}</td>
+                      ))}
                     </tr>
                   ))}
                 </tbody>
